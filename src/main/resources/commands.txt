@@ -1,0 +1,3 @@
+PASS foobar
+NICK reactive-tester
+USER guest 0 * :Reactive Tester
