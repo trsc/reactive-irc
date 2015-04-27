@@ -2,3 +2,58 @@ PASS foobar
 NICK reactive-tester
 USER guest 0 * :Reactive Tester
 JOIN #akka
+
+
+:hitchcock.freenode.net NOTICE * :*** Looking up your hostname...
+:hitchcock.freenode.net NOTICE * :*** Checking Ident
+:hitchcock.freenode.net NOTICE * :*** Found your hostname
+:hitchcock.freenode.net NOTICE * :*** No Ident response
+:hitchcock.freenode.net 001 reactive-tester :Welcome to the freenode Internet Relay Chat Network reactive-tester
+:hitchcock.freenode.net 002 reactive-tester :Your host is hitchcock.freenode.net[31.13.222.109/6666], running version ircd-seven-1.1.3
+:hitchcock.freenode.net 003 reactive-tester :This server was created Sat Oct 11 2014 at 13:43:24 UTC
+:hitchcock.freenode.net 004 reactive-tester hitchcock.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQSbcefgijklmnopqrstvz bkloveqjfI
+:hitchcock.freenode.net 005 reactive-tester CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQScgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
+:hitchcock.freenode.net 005 reactive-tester CASEMAPPING=rfc1459 CHARSET=ascii NICKLEN=16 CHANNELLEN=50 TOPICLEN=390 ETRACE CPRIVMSG CNOTICE DEAF=D MONITOR=100 FNC TARGMAX=NAMES:1,LIST:1,KICK:1,WHOIS:1,PRIVMSG:4,NOTICE:4,ACCEPT:,MONITOR: :are supported by this server
+:hitchcock.freenode.net 005 reactive-tester EXTBAN=$,ajrxz WHOX CLIENTVER=3.0 SAFELIST ELIST=CTU :are supported by this server
+:hitchcock.freenode.net 251 reactive-tester :There are 163 users and 88730 invisible on 27 servers
+:hitchcock.freenode.net 252 reactive-tester 22 :IRC Operators online
+:hitchcock.freenode.net 253 reactive-tester 7 :unknown connection(s)
+:hitchcock.freenode.net 254 reactive-tester 57136 :channels formed
+:hitchcock.freenode.net 255 reactive-tester :I have 4943 clients and 1 servers
+:hitchcock.freenode.net 265 reactive-tester 4943 6879 :Current local users 4943, max 6879
+:hitchcock.freenode.net 266 reactive-tester 88893 105671 :Current global users 88893, max 105671
+:hitchcock.freenode.net 250 reactive-tester :Highest connection count: 6880 (6879 clients) (2344169 connections received)
+:hitchcock.freenode.net 375 reactive-tester :- hitchcock.freenode.net Message of the Day -
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- Welcome to hitchcock.freenode.net in Sofia, Bulgaria, EU, kindly sponsored by
+:hitchcock.freenode.net 372 reactive-tester :- Neterra Communications (www.neterra.net)
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- HITCHCOCK, SIR ALFRED [1899 - 1980] Born in Essex,
+:hitchcock.freenode.net 372 reactive-tester :- England, Sir Alfred Hitchcock was a noted film director
+:hitchcock.freenode.net 372 reactive-tester :- and producer. Over a long career he pioneered many modern
+:hitchcock.freenode.net 372 reactive-tester :- techniques in film-making, made more than 50 feature films,
+:hitchcock.freenode.net 372 reactive-tester :- and influenced many present-day directors and producers.
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- Welcome to freenode - supporting the free and open source
+:hitchcock.freenode.net 372 reactive-tester :- software communities since 1998.
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- By connecting to freenode you indicate that you have read and
+:hitchcock.freenode.net 372 reactive-tester :- accept our policies as set out on http://www.freenode.net
+:hitchcock.freenode.net 372 reactive-tester :- freenode runs an open proxy scanner. Please join #freenode for
+:hitchcock.freenode.net 372 reactive-tester :- any network-related questions or queries, where a number of
+:hitchcock.freenode.net 372 reactive-tester :- volunteer staff and helpful users will be happy to assist you.
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- You can meet us at FOSSCON (http://www.fosscon.org) where we get
+:hitchcock.freenode.net 372 reactive-tester :- together with like-minded FOSS enthusiasts for talks and
+:hitchcock.freenode.net 372 reactive-tester :- real-life collaboration.
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- We would like to thank Private Internet Access
+:hitchcock.freenode.net 372 reactive-tester :- (https://www.privateinternetaccess.com/) and the other
+:hitchcock.freenode.net 372 reactive-tester :- organisations that help keep freenode and our other projects
+:hitchcock.freenode.net 372 reactive-tester :- running for their sustained support.
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 372 reactive-tester :- In particular we would like to thank the sponsor
+:hitchcock.freenode.net 372 reactive-tester :- of this server, details of which can be found above.
+:hitchcock.freenode.net 372 reactive-tester :-
+:hitchcock.freenode.net 376 reactive-tester :End of /MOTD command.
+:reactive-tester MODE reactive-tester :+i

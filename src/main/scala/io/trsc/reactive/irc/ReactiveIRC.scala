@@ -1,11 +1,12 @@
 package io.trsc.reactive.irc
 
 import java.net.InetSocketAddress
+
 import akka.actor.ActorSystem
-import akka.stream.{BidiShape, ActorFlowMaterializer}
-import akka.stream.scaladsl.{Flow, BidiFlow, Source, Tcp}
+import akka.stream.ActorFlowMaterializer
+import akka.stream.scaladsl._
 import akka.util.ByteString
-import io.trsc.reactive.irc.protocol.IrcFrameDecoder
+import io.trsc.reactive.irc.protocol.{IrcMessage, IrcMessageDecoder, IrcFrameDecoder}
 
 /**
  * Implementation
@@ -27,21 +28,38 @@ object ReactiveIRC extends App {
   implicit val system = ActorSystem("reactive-irc")
   implicit val materializer = ActorFlowMaterializer()
 
-  val connection = Tcp().outgoingConnection(new InetSocketAddress("irc.freenode.net", 6666))
+  // val registeringSource = Source("PASS foobar" :: "NICK reactive-tester" :: "USER guest 0 * :Reactive Tester" :: "JOIN #akka" :: Nil)
 
-  val convertToByteString = (s: String) => ByteString(s)
-  val convertToString = (b: ByteString) => b.utf8String
+  val ircMessageSource = Source() { implicit builder =>
+    import FlowGraph.Implicits._
 
-  val codec = BidiFlow() { b =>
-    val outbound = b.add(Flow[String].map(_ + "\r\n").map(ByteString(_)))
-    val inbound = b.add(Flow[ByteString].transform(() => new IrcFrameDecoder).map(_.utf8String))
-    BidiShape(outbound, inbound)
+    val connection = Tcp().outgoingConnection(new InetSocketAddress("irc.wikimedia.org", 6667))
+    val registeringSource = Source("NICK reactive-tester" :: "USER guest 0 * :Reactive Tester" :: Nil)
+    // TODO remove lame logging
+    val log = Flow[ByteString].map(s => {println(s"sending: ${s.utf8String}"); s})
+    val convertToByteString = Flow[String]
+                                .map(_ + "\r\n")
+                                .map(ByteString.apply)
+    val decodeIrcMessages = Flow[ByteString]
+                              .transform(() => new IrcFrameDecoder)
+                              .transform(() => new IrcMessageDecoder)
+
+    // TODO properly implement the Request Response Protocol
+    val testFlow = Flow[IrcMessage].filter(_.command == "376").map(_ => {println("joining"); "JOIN #en.wikipedia\r\n"}).map(ByteString.apply)
+
+    val bcast = builder.add(Broadcast[IrcMessage](2))
+    val merge = builder.add(MergePreferred[ByteString](1))
+
+    // TODO figure out how to get rid of this shit
+    val testr = Flow[IrcMessage].map(identity)
+
+    // TODO design proper feedback flow: only control messages should be cycled
+    val f = registeringSource ~> convertToByteString ~> merge ~> log ~> connection ~> decodeIrcMessages ~> bcast ~> testr
+                                                        merge.preferred    <~     testFlow    <~    bcast
+
+    f.outlet
   }
 
-  val joiningSource = Source("PASS foobar" :: "NICK reactive-tester" :: "USER guest 0 * :Reactive Tester" :: "JOIN #akka" :: Nil)
-
-  joiningSource.via(codec.join(connection)).runForeach { s =>
-    println(s"received: $s")
-  }
+  ircMessageSource.runForeach(println)
 
 }
