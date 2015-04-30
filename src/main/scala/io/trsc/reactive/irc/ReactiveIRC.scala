@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorFlowMaterializer
 import akka.stream.scaladsl._
 import akka.util.ByteString
+import io.trsc.reactive.irc.flows.UnzipIrcMessages
 import io.trsc.reactive.irc.protocol.{IrcNormalizeStage, IrcFrameStage, IrcMessage, IrcMessageStage}
 
 /**
@@ -37,28 +38,27 @@ object ReactiveIRC extends App {
     val registeringSource = Source("NICK reactive-tester" :: "USER guest 0 * :Reactive Tester" :: Nil)
     // TODO remove lame logging
     val log = Flow[ByteString].map(s => {println(s"sending: ${s.utf8String}"); s})
+
     val convertToByteString = Flow[String]
                                 .map(_ + "\r\n")
                                 .map(ByteString.apply)
+
     val decodeIrcMessages = Flow[ByteString]
                               .transform(() => new IrcFrameStage)
                               .transform(() => new IrcNormalizeStage)
                               .transform(() => new IrcMessageStage)
 
     // TODO properly implement the Request Response Protocol
-    val testFlow = Flow[IrcMessage].filter(_.command == "376").map(_ => {println("joining"); "JOIN #en.wikipedia\r\n"}).map(ByteString.apply)
+    val testFlow = Flow[IrcMessage].filter(_.command == "376").map(_ => "JOIN #en.wikipedia\r\n").map(ByteString.apply)
 
-    val bcast = builder.add(Broadcast[IrcMessage](2))
     val merge = builder.add(MergePreferred[ByteString](1))
 
-    // TODO figure out how to get rid of this shit
-    val testr = Flow[IrcMessage].map(identity)
+    val splitMessages = builder.add(new UnzipIrcMessages)
 
-    // TODO design proper feedback flow: only control messages should be cycled
-    val f = registeringSource ~> convertToByteString ~> merge ~> log ~> connection ~> decodeIrcMessages ~> bcast ~> testr
-                                                        merge.preferred    <~     testFlow    <~    bcast
+    val f = registeringSource ~> convertToByteString ~> merge ~> log ~> connection ~> decodeIrcMessages ~> splitMessages.in
+                                                        merge.preferred    <~     testFlow    <~    splitMessages.systemMessages
 
-    f.outlet
+    splitMessages.channelMessages
   }
 
   ircMessageSource.runForeach(println)
