@@ -3,7 +3,7 @@ package io.trsc.reactive.irc.protocol
 import akka.stream.stage.{Context, PushStage, SyncDirective}
 import akka.util.ByteString
 
-class IrcMessageDecoder extends PushStage[ByteString, IrcMessage]{
+class IrcMessageStage extends PushStage[ByteString, IrcMessage] {
   def onPush(bytes: ByteString, ctx: Context[IrcMessage]): SyncDirective = {
     var prefixEnd = 0
     val prefix = bytes.head match {

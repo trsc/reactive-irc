@@ -6,7 +6,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorFlowMaterializer
 import akka.stream.scaladsl._
 import akka.util.ByteString
-import io.trsc.reactive.irc.protocol.{IrcMessage, IrcMessageDecoder, IrcFrameDecoder}
+import io.trsc.reactive.irc.protocol.{IrcNormalizeStage, IrcFrameStage, IrcMessage, IrcMessageStage}
 
 /**
  * Implementation
@@ -41,8 +41,9 @@ object ReactiveIRC extends App {
                                 .map(_ + "\r\n")
                                 .map(ByteString.apply)
     val decodeIrcMessages = Flow[ByteString]
-                              .transform(() => new IrcFrameDecoder)
-                              .transform(() => new IrcMessageDecoder)
+                              .transform(() => new IrcFrameStage)
+                              .transform(() => new IrcNormalizeStage)
+                              .transform(() => new IrcMessageStage)
 
     // TODO properly implement the Request Response Protocol
     val testFlow = Flow[IrcMessage].filter(_.command == "376").map(_ => {println("joining"); "JOIN #en.wikipedia\r\n"}).map(ByteString.apply)

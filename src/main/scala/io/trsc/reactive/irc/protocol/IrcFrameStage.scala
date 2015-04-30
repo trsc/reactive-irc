@@ -4,14 +4,14 @@ import akka.stream.stage.{Context, StatefulStage, SyncDirective}
 import akka.util.ByteString
 import scala.annotation.tailrec
 
-class IrcFrameDecoder extends StatefulStage[ByteString, ByteString] {
+class IrcFrameStage extends StatefulStage[ByteString, ByteString] {
   private val separatorBytes = ByteString("\r\n")
   private val firstSeparatorByte = separatorBytes.head
   private var buffer = ByteString.empty
   private var nextPossibleMatch = 0
 
   def initial = new State {
-    override def onPush(chunk: ByteString, ctx: Context[ByteString]): SyncDirective = {
+    def onPush(chunk: ByteString, ctx: Context[ByteString]): SyncDirective = {
       buffer ++= chunk
       emit(doParse(Vector.empty).iterator, ctx)
     }
