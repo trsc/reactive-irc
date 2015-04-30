@@ -10,7 +10,7 @@ class SystemMessageHandler(channels: Seq[String]) extends StatefulStage[IrcMessa
   override def initial: StageState[IrcMessage, String] = new StageState[IrcMessage, String] {
     override def onPush(msg: IrcMessage, ctx: Context[String]): SyncDirective = msg match {
       case IrcMessage(_, "001", _) => emit(joinCommands, ctx)
-      case IrcMessage(_, "PING", server) => emit(Iterator.single("PONG "), ctx)
+      case IrcMessage(_, "PING", server) => emit(Iterator.single("PONG " + server.head), ctx)
       case _ => ctx.pull()
     }
   }
