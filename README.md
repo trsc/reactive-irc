@@ -1,16 +1,12 @@
-# reactive-irc - a streaming IRC client
+# reactive-irc
 
 ## RFC
 
 https://tools.ietf.org/html/rfc2812
 
-## Features
+## Todo
 
-* connect to a network
-* join channels
-* gather all kinds of messages in JSON format
-
-
-
-
- 
+* proper logging (default: off)
+* proper types for messages
+* make it configurable to what kinds of messages you want to listen to (join/part, sys, etc.)
+* tests: (http://doc.akka.io/docs/akka-stream-and-http-experimental/1.0-RC1/scala/stream-testkit.html)
