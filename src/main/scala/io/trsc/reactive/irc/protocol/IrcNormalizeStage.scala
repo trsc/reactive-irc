@@ -57,11 +57,11 @@ class IrcNormalizeStage extends PushStage[ByteString, ByteString] {
       if (len > pos) {
         val idx = input.indexWhere(b =>
           b == ColorStart ||
-            b == Plain ||
-            b == Bold ||
-            b == Italics ||
-            b == Underline ||
-            b == Reverse
+          b == Plain ||
+          b == Bold ||
+          b == Italics ||
+          b == Underline ||
+          b == Reverse
           , pos)
         if (idx != -1) {
           input(idx) match {

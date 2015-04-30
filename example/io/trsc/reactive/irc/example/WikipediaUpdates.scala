@@ -9,6 +9,6 @@ object WikipediaUpdates extends App {
   implicit val system = ActorSystem("wikipedia-update-listener")
   implicit val materializer = ActorFlowMaterializer()
 
-  ReactiveIRC.listen("irc.wikimedia.org", 6667, "reactive-example", Nil).runForeach(println)
+  ReactiveIRC.listen("irc.wikimedia.org", 6667, "reactive-example", "#en.wikipedia" :: Nil).runForeach(println)
 
 }

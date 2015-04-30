@@ -1,4 +1,4 @@
-package io.trsc.reactive.irc.flows
+package io.trsc.reactive.irc.router
 
 import akka.stream.FanOutShape.{Name, Init}
 import akka.stream.{OperationAttributes, FanOutShape}

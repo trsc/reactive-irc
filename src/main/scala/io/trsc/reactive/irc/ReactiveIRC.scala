@@ -5,12 +5,12 @@ import java.net.InetSocketAddress
 import akka.actor.ActorSystem
 import akka.stream.scaladsl._
 import akka.util.ByteString
-import io.trsc.reactive.irc.flows.UnzipIrcMessages
+import io.trsc.reactive.irc.router.{SystemMessageHandler, UnzipIrcMessages}
 import io.trsc.reactive.irc.protocol.{IrcFrameStage, IrcMessage, IrcMessageStage, IrcNormalizeStage}
 
 object ReactiveIRC {
 
-  def listen(network: String, port: Int, nick: String, /* unused*/ channels: Seq[String])(implicit s: ActorSystem): Source[IrcMessage, Unit] = {
+  def listen(network: String, port: Int, nick: String, channels: Seq[String])(implicit s: ActorSystem): Source[IrcMessage, Unit] = {
     Source() { implicit builder =>
       import FlowGraph.Implicits._
 
@@ -28,15 +28,14 @@ object ReactiveIRC {
         .transform(() => new IrcNormalizeStage)
         .transform(() => new IrcMessageStage)
 
-      // TODO properly implement the Request Response Protocol
-      val testFlow = Flow[IrcMessage].filter(_.command == "001").map(_ => "JOIN #en.wikipedia\r\n").map(ByteString.apply)
+      val systemMessageHandler = Flow[IrcMessage].transform(() => new SystemMessageHandler(channels))
 
-      val merge = builder.add(MergePreferred[ByteString](1))
+      val merge = builder.add(MergePreferred[String](1))
 
       val splitMessages = builder.add(new UnzipIrcMessages)
 
-      registeringSource ~> convertToByteString ~> merge ~> log ~> connection ~> decodeIrcMessages ~> splitMessages.in
-      merge.preferred    <~    testFlow    <~    splitMessages.systemMessages
+      registeringSource ~> merge ~> convertToByteString ~> log ~> connection ~> decodeIrcMessages ~> splitMessages.in
+      merge.preferred    <~    systemMessageHandler    <~    splitMessages.systemMessages
 
       splitMessages.channelMessages
     }
