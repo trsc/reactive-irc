@@ -1,14 +1,15 @@
 package io.trsc.reactive.irc.example
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import akka.stream.ActorFlowMaterializer
 import akka.stream.actor.ActorSubscriberMessage.OnNext
 import akka.stream.actor.{ActorSubscriber, OneByOneRequestStrategy, RequestStrategy}
-import akka.stream.scaladsl.{Sink, Flow}
+import akka.stream.scaladsl.{Flow, Sink}
 import akka.stream.stage.{Context, PushStage, SyncDirective}
 import io.trsc.reactive.irc.ReactiveIRC
 import io.trsc.reactive.irc.protocol.IrcMessage
 
+import scala.collection._
 import scala.util.Try
 
 object WikipediaUpdates extends App {
@@ -41,12 +42,22 @@ class ChangedLinesExtractor extends PushStage[String, Int] {
 
 class CountingActor extends ActorSubscriber {
 
-  private var count = 0
+  private var queue: mutable.Queue[(Int, Long)] = mutable.Queue.empty
+
+  private var added = 0
+  private var removed = 0
 
   protected def requestStrategy: RequestStrategy = OneByOneRequestStrategy
 
   def receive = {
-    case OnNext(lines: Int) => count = count + lines; println(s"lines added to wikipedia since start: $count")
+    case OnNext(lines: Int) if lines < 0 => removed = removed + lines; printValues
+    case OnNext(lines: Int) if lines > 0 => added = added + lines; printValues
+    case _ => printValues
+  }
+
+  def printValues {
+    println(s"lines added: $added")
+    println(s"lines removed: $removed")
   }
 
 }

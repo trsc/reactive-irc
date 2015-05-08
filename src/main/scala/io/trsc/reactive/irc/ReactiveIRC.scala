@@ -36,7 +36,7 @@ object ReactiveIRC {
       val splitMessages = builder.add(new UnzipIrcMessages)
 
       registeringSource ~> merge ~> convertToByteString ~> log ~> connection ~> decodeIrcMessages ~> splitMessages.in
-      merge.preferred    <~    systemMessageHandler   <~  logSys  <~ splitMessages.systemMessages
+      merge.preferred    <~    systemMessageHandler  <~ logSys  <~ splitMessages.systemMessages
 
       splitMessages.channelMessages
     }
