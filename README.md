@@ -1,5 +1,7 @@
 # reactive-irc
 
+very early work in progress akka stream experiment
+
 ## RFC
 
 https://tools.ietf.org/html/rfc2812
